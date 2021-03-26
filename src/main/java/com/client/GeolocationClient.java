@@ -1,5 +1,6 @@
 package com.client;
 
+import com.model.GeolocationResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class GeolocationClient {
@@ -10,13 +11,13 @@ public class GeolocationClient {
         client = WebClient.create(BASE_URL);
     }
 
-    public String getGeolocationClient(String ip) {
+    public GeolocationResponse getGeolocationClient(String ip) {
         client = WebClient.create(BASE_URL+ip);
         return client
                 .get()
                 .uri("")
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(GeolocationResponse.class)
                 .block();
     }
 }

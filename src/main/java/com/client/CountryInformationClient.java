@@ -1,5 +1,6 @@
 package com.client;
 
+import com.model.CountryInformationResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class CountryInformationClient {
@@ -10,12 +11,12 @@ public class CountryInformationClient {
         client = WebClient.create(BASE_URL);
     }
 
-    public String getCountryInformation() {
+    public CountryInformationResponse getCountryInformation() {
         return client
                 .get()
                 .uri("")
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(CountryInformationResponse.class)
                 .block();
     }
 }

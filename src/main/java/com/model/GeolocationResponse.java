@@ -4,13 +4,6 @@ public class GeolocationResponse {
     private String countryName;
     private String countryCode;
 
-
-    public GeolocationResponse(String countryName, String countryCode){
-        this.countryName = countryName;
-        this.countryCode = countryCode;
-
-    }
-
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
