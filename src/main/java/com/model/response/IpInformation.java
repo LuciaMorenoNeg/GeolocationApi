@@ -1,16 +1,16 @@
 package com.model.response;
 
-import net.sf.json.JSONObject;
+import net.sf.json.JSONArray;
 
 public class IpInformation {
     private String ip;
     private String date;
-    private JSONObject country;
+    private String country;
     private String iso_code;
-    private JSONObject languages;
-    private JSONObject currency;
-    private JSONObject times;
-    private String estimated_distance;
+    private JSONArray languages;
+    private String currency;
+    private String times;
+    private double estimated_distance;
 
     public String getIp() {
         return ip;
@@ -28,11 +28,11 @@ public class IpInformation {
         this.date = date;
     }
 
-    public JSONObject getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(JSONObject country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
@@ -44,35 +44,35 @@ public class IpInformation {
         this.iso_code = iso_code;
     }
 
-    public JSONObject getLanguages() {
+    public JSONArray getLanguages() {
         return languages;
     }
 
-    public void setLanguages(JSONObject languages) {
+        public void setLanguages(JSONArray languages) {
         this.languages = languages;
     }
 
-    public JSONObject getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(JSONObject currency) {
+    public void setCurrency(String currency) {
         this.currency = currency;
     }
 
-    public JSONObject getTimes() {
+    public String getTimes() {
         return times;
     }
 
-    public void setTimes(JSONObject times) {
+    public void setTimes(String times) {
         this.times = times;
     }
 
-    public String getEstimated_distance() {
+    public double getEstimated_distance() {
         return estimated_distance;
     }
 
-    public void setEstimated_distance(String estimated_distance) {
+    public void setEstimated_distance(double estimated_distance) {
         this.estimated_distance = estimated_distance;
     }
 }
