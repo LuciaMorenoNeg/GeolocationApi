@@ -1,8 +1,10 @@
 package com.client;
 
-import com.model.GeolocationResponse;
+import com.model.response.GeolocationResponse;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Service
 public class GeolocationClient {
     private static final String BASE_URL = "https://api.ip2country.info/ip?";
     private WebClient client;
@@ -12,10 +14,9 @@ public class GeolocationClient {
     }
 
     public GeolocationResponse getGeolocationClient(String ip) {
-        client = WebClient.create(BASE_URL+ip);
         return client
                 .get()
-                .uri("")
+                .uri(ip)
                 .retrieve()
                 .bodyToMono(GeolocationResponse.class)
                 .block();
