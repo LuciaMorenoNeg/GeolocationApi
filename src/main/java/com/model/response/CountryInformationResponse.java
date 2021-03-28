@@ -1,4 +1,4 @@
-package com.model;
+package com.model.response;
 
 import net.sf.json.JSONObject;
 

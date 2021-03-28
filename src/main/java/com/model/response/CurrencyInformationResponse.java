@@ -1,10 +1,11 @@
-package com.model;
+package com.model.response;
 
 import java.util.Map;
 
 public class CurrencyInformationResponse {
     private String base;
     private String date;
+    private Map<String, Float> rates;
 
     public String getBase() {
         return base;
@@ -30,5 +31,4 @@ public class CurrencyInformationResponse {
         this.rates = rates;
     }
 
-    private Map<String, Float> rates;
 }

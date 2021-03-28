@@ -1,4 +1,4 @@
-package com.model;
+package com.model.response;
 
 public class GeolocationResponse {
     private String countryName;
