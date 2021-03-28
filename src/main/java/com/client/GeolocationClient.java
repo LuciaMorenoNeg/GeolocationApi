@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class GeolocationClient {
-    private static final String BASE_URL = "https://api.ip2country.info/ip?";
+    private static final String BASE_URL = "https://api.ip2country.info/ip";
     private WebClient client;
 
     public GeolocationClient() {
@@ -16,7 +16,7 @@ public class GeolocationClient {
     public GeolocationResponse getGeolocationClient(String ip) {
         return client
                 .get()
-                .uri(ip)
+                .uri("?"+ip)
                 .retrieve()
                 .bodyToMono(GeolocationResponse.class)
                 .block();
