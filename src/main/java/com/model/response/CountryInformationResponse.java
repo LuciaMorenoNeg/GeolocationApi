@@ -1,33 +1,47 @@
 package com.model.response;
 
-import net.sf.json.JSONObject;
+import net.sf.json.JSONArray;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CountryInformationResponse {
-    private JSONObject languages;
-    private JSONObject currencies;
-    private String timezones;
+    private JSONArray languages;
+    private JSONArray currencies;
+    private List<String> timezones;
+    private List<Double> latlng;
 
-    public JSONObject getLanguages() {
+    public List<Double> getLatlng() {
+        return latlng;
+    }
+
+    public void setLatlng(List<Double> latlng) {
+        this.latlng = latlng;
+    }
+
+
+    public JSONArray getLanguages() {
         return languages;
     }
 
-    public void setLanguages(JSONObject languages) {
+    public void setLanguages(JSONArray languages) {
         this.languages = languages;
     }
 
-    public JSONObject getCurrencies() {
+    public JSONArray getCurrencies() {
         return currencies;
     }
 
-    public void setCurrencies(JSONObject currencies) {
+    public void setCurrencies(JSONArray currencies) {
         this.currencies = currencies;
     }
 
-    public String getTimezones() {
+    public List<String> getTimezones() {
         return timezones;
     }
 
-    public void setTimezones(String timezones) {
+    public void setTimezones(List<String> timezones) {
         this.timezones = timezones;
     }
 }
