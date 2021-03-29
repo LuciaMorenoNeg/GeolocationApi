@@ -9,12 +9,16 @@ import com.model.response.CurrencyInformationResponse;
 import com.model.response.GeolocationResponse;
 import com.model.response.IpInformation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,8 +28,8 @@ public class IpService {
     private static final double LAT_BSAS = -34.6037F;
     private static final double LONG_BSAS = -58.3816F;
     private final double EARTH_RADIUS = 6371;
-    private Date currentDate = Calendar.getInstance().getTime();
 
+    private final StatsService statsService;
     private final CurrencyInformationClient currencyInformationClient;
     private final CountryInformationClient countryInformationClient;
     private final GeolocationClient geolocationClient;
@@ -35,19 +39,25 @@ public class IpService {
 
 
     @Autowired
-    public IpService(CurrencyInformationClient currencyInformationClient, CountryInformationClient countryInformationClient, GeolocationClient geolocationClient) {
+    public IpService(StatsService statsService, CurrencyInformationClient currencyInformationClient, CountryInformationClient countryInformationClient, GeolocationClient geolocationClient) {
+        this.statsService = statsService;
         this.currencyInformationClient = currencyInformationClient;
         this.countryInformationClient = countryInformationClient;
         this.geolocationClient = geolocationClient;
     }
 
-    public int lastDateFromCurrency() throws Exception {
-        Date lastDate = new SimpleDateFormat("yyyy-MM-dd").parse(currencyInformation.getDate());
-        int dias = (int) ((lastDate.getTime() - currentDate.getTime()));
-        return dias;
+    public long lastDateFromCurrency() {
+        try {
+            LocalDateTime lastDate = new SimpleDateFormat("yyyy-MM-dd").parse(currencyInformation.getDate())
+                    .toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime today = LocalDateTime.now();
+            return Duration.between(lastDate, today).toDays();
+        } catch (ParseException e) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error parsing currency information date", e);
+        }
     }
 
-    public IpInformation getInformation(String ip) throws Exception {
+    public IpInformation getInformation(String ip) {
         Pattern pattern = Pattern.compile(IP_PATTERN);
         Matcher matcher = pattern.matcher(ip);
         if (matcher.matches()) {
@@ -60,31 +70,21 @@ public class IpService {
                     if (countryInformation.getLatlng() != null) {
                         setCountryInformation(ipInformation, countryInformation);
                     }
-                    if (currencyInformation == null || lastDateFromCurrency() > 1) {
+                    if (currencyInformation == null || lastDateFromCurrency() >= 1) {
                         currencyInformation = currencyInformationClient.getCurrencyInformation();
-                        currentDate = Calendar.getInstance().getTime();
                     }
                     setCurrency(ipInformation, countryInformation);
                 }
-                /*System.out.println(ipInformation.getIp());
-                System.out.println(ipInformation.getDate());
-                System.out.println(ipInformation.getCountry());
-                System.out.println(ipInformation.getIso_code());
-                System.out.println(ipInformation.getLanguages());
-                System.out.println(ipInformation.getCurrency());
-                System.out.println(ipInformation.getTimes());
-                System.out.println(ipInformation.getEstimated_distance());*/
-            } catch (ApiException e) {
 
+            } catch (ApiException e) {
+                throw e;
             }
 
             return ipInformation;
 
         } else {
-            // la ip no es correcta
+            throw new ApiException(HttpStatus.BAD_REQUEST.value(), "Required IP has an invalid format. IP: '" + ip + "'", null);
         }
-
-        return null;
     }
 
     public double getDistance(double latOrigin, double longOrigin, double latDest, double longDest) {
@@ -116,7 +116,7 @@ public class IpService {
         double latDest = countryInformation.getLatlng().get(0);
         double longDest = countryInformation.getLatlng().get(1);
         double distance = getDistance(LAT_BSAS, LONG_BSAS, latDest, longDest);
-        serviceStatistics(distance);
+        statsService.updateStatistics(distance);
         DecimalFormat df = new DecimalFormat("###.##");
         ipInformation.setEstimated_distance(df.format(distance) + " kms");
 
@@ -133,20 +133,6 @@ public class IpService {
             currency = base + " ( 1 EUR = " + amount + " " + symbol + " )";
         }
         ipInformation.setCurrency(currency);
-    }
-
-    public void serviceStatistics(double newDistance) {
-        double farthestDistance = 0;
-        double closestDistance = 0;
-        double averageDistance = 0;
-        int count = 0;
-        if (newDistance < closestDistance) {
-            closestDistance = newDistance;
-        }
-        if (newDistance > farthestDistance) {
-            farthestDistance = newDistance;
-        }
-        averageDistance = (averageDistance + newDistance) / count;
     }
 
 
