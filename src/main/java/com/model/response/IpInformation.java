@@ -7,10 +7,10 @@ public class IpInformation {
     private String date;
     private String country;
     private String iso_code;
-    private JSONArray languages;
+    private String languages;
     private String currency;
     private String times;
-    private double estimated_distance;
+    private String estimated_distance;
 
     public String getIp() {
         return ip;
@@ -44,11 +44,11 @@ public class IpInformation {
         this.iso_code = iso_code;
     }
 
-    public JSONArray getLanguages() {
+    public String getLanguages() {
         return languages;
     }
 
-        public void setLanguages(JSONArray languages) {
+        public void setLanguages(String languages) {
         this.languages = languages;
     }
 
@@ -68,11 +68,11 @@ public class IpInformation {
         this.times = times;
     }
 
-    public double getEstimated_distance() {
+    public String getEstimated_distance() {
         return estimated_distance;
     }
 
-    public void setEstimated_distance(double estimated_distance) {
+    public void setEstimated_distance(String estimated_distance) {
         this.estimated_distance = estimated_distance;
     }
 }
