@@ -1,7 +1,5 @@
 package com.model.response;
 
-import net.sf.json.JSONArray;
-
 public class IpInformation {
     private String ip;
     private String date;
