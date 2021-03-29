@@ -1,7 +1,6 @@
 package com.client;
 
 import com.exception.ApiException;
-import com.model.response.CurrencyInformationResponse;
 import com.model.response.GeolocationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
