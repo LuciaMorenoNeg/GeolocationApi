@@ -1,8 +1,13 @@
 package com.client;
 
+import com.exception.ApiException;
 import com.model.response.CountryInformationResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class CountryInformationClient {
@@ -13,12 +18,17 @@ public class CountryInformationClient {
         client = WebClient.create(BASE_URL);
     }
 
-    public CountryInformationResponse getCountryInformation(String countryName) {
+    public CountryInformationResponse getCountryInformation(String countryName)  {
         return client
                 .get()
                 .uri(countryName)
-                .retrieve()
-                .bodyToMono(CountryInformationResponse.class)
+                .exchangeToMono(response -> {
+                    if (!response.statusCode().equals(HttpStatus.OK)) {
+                        return Mono.error(new ApiException(response.statusCode().value(), "Error getting country information", null));
+                    }
+                    return response.bodyToMono(CountryInformationResponse.class);
+                })
                 .block();
     }
+
 }

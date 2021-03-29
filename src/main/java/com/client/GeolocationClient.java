@@ -1,8 +1,12 @@
 package com.client;
 
+import com.exception.ApiException;
+import com.model.response.CurrencyInformationResponse;
 import com.model.response.GeolocationResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class GeolocationClient {
@@ -17,8 +21,13 @@ public class GeolocationClient {
         return client
                 .get()
                 .uri("?"+ip)
-                .retrieve()
-                .bodyToMono(GeolocationResponse.class)
+                .exchangeToMono(response -> {
+                    if (!response.statusCode().equals(HttpStatus.OK)) {
+                        return Mono.error(new ApiException(response.statusCode().value(), "Error getting country information", null));
+                    }
+                    return response.bodyToMono(GeolocationResponse.class);
+                })
                 .block();
     }
+
 }
